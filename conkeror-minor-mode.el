@@ -5,7 +5,7 @@
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
 ;; Version: 1.0
-;; Keywords: 
+;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
 
@@ -89,18 +89,34 @@ If this is nil we'll try to find an executable called
   :group 'conkeror-minor-mode)
 
 (defun eval-in-conkeror (l r)
-  "Send current js statement to conqueror.
+  "Send current javacript statement to conqueror.
 
-If mark is active, send the current region instead."
+This command determines the current javascript statement under
+point and evaluates it in conkeror. The point of this is NOT to
+gather the result (there is no return value), but to customize
+conkeror directly from emacs by setting variables, defining
+functions, etc.
+
+If mark is active, send the current region instead of current
+statement."
   (interactive "r")
   (message "Result was:\n%s"
            (let ((comm 
                   (concat (conkeror--command)
-                          " -q -batch -e '"
-                          (js--current-statement)
-                          "'")))
+                          " -q -batch -e "
+                          (conkeror--wrap-in ?' (js--current-statement)))))
              (message "Running:\n%s" comm)
              (shell-command-to-string comm))))
+
+(defun conkeror--wrap-in (quote line)
+  "Wrap the string in QUOTE and escape instances of QUOTE inside it."
+  (let ((st (if (stringp quote) quote (char-to-string quote))))    
+    (concat st
+            (replace-regexp-in-string
+             (regexp-quote st)
+             (concat st "\\\\\\&" st)
+             line t)
+            st)))
 
 (defun conkeror--command ()
   "Generate the string for the conkeror command."
@@ -139,7 +155,7 @@ If mark is active, send the current region instead."
       (buffer-substring-no-properties l r))))
 
 ;;;###autoload
-(define-minor-mode conkeror-minor-mode nil nil "Conk"
+(define-minor-mode conkeror-minor-mode nil nil " Conk"
   '(("" . eval-in-conkeror))
   :group 'conkeror-minor-modep)
 
