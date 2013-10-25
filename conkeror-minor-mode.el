@@ -88,7 +88,7 @@ If this is nil we'll try to find an executable called
   :type 'string
   :group 'conkeror-minor-mode)
 
-(defun eval-in-conkeror (l r)
+(defun eval-in-conkeror ()
   "Send current javacript statement to conqueror.
 
 This command determines the current javascript statement under
@@ -99,12 +99,13 @@ functions, etc.
 
 If mark is active, send the current region instead of current
 statement."
-  (interactive "r")
+  (interactive)
   (message "Result was:\n%s"
            (let ((comm 
-                  (concat (conkeror--command)
-                          " -q -batch -e "
-                          (conkeror--wrap-in ?' (js--current-statement)))))
+                  (concat
+                   (conkeror--command)
+                   " -q -batch -e "
+                   (conkeror--wrap-in ?' (js--current-statement)))))
              (message "Running:\n%s" comm)
              (shell-command-to-string comm))))
 
@@ -161,7 +162,7 @@ with single quotes in linux command shells."
 ;;;###autoload
 (define-minor-mode conkeror-minor-mode nil nil " Conk"
   '(("" . eval-in-conkeror))
-  :group 'conkeror-minor-modep)
+  :group 'conkeror-minor-mode)
 
 (provide 'conkeror-minor-mode)
 ;;; conkeror-minor-mode.el ends here.
