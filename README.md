@@ -29,6 +29,6 @@ activated. If you want it on every javascript file, just do
 If you want it only on some files, do something like:
 
     (add-hook 'js-mode-hook (lambda ()
-                              (when (string= "your-conkerorrc-file" (buffer-file-name))
+                              (when (string= "conkerorrc" (buffer-file-name))
                                 (conkeror-minor-mode 1))))
 

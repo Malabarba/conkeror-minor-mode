@@ -42,7 +42,7 @@
 ;; If you want it only on some files, do something like:
 ;; 
 ;;     (add-hook 'js-mode-hook (lambda ()
-;;                               (when (string= "your-conkerorrc-file" (buffer-file-name))
+;;                               (when (string= ".conkerorrc" (buffer-file-name))
 ;;                                 (conkeror-minor-mode 1))))
 ;; 
 ;;
@@ -66,8 +66,8 @@
 ;; 1.0 - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-version "1.0" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-version-int 1 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.0" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 1 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -108,14 +108,18 @@ statement."
              (message "Running:\n%s" comm)
              (shell-command-to-string comm))))
 
-(defun conkeror--wrap-in (quote line)
-  "Wrap the string in QUOTE and escape instances of QUOTE inside it."
+(defun conkeror--wrap-in (quote text)
+  "Wrap TEXT in QUOTE and escape instances of QUOTE inside it.
+
+Escapes by wrapping such instances in themselves and adding a
+backslash. This may seems excessive, but it's intended for use
+with single quotes in linux command shells."
   (let ((st (if (stringp quote) quote (char-to-string quote))))    
     (concat st
             (replace-regexp-in-string
              (regexp-quote st)
              (concat st "\\\\\\&" st)
-             line t)
+             text t)
             st)))
 
 (defun conkeror--command ()
