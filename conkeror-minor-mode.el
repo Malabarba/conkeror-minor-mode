@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.3
+;; Version: 1.3.1
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -18,7 +18,7 @@
 ;; 
 ;; Currently, this only defines a function (for sending current
 ;; javascript statement to be evaluated by conkeror) and binds it to a
-;; key. This function is `eval-in-conkeror' bound to **C-c C-c**.
+;; key. This function is `eval-in-conkeror' bound to `C-cC-c'.
 ;; 
 ;; Installation:
 ;; =============
@@ -63,12 +63,13 @@
 ;; 
 
 ;;; Change Log:
+;; 1.3.1 - 20131026 - Add provide as a keyword
 ;; 1.3 - 20131025 - Font-locking
 ;; 1.0 - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.3" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 2 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.3.1" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 3 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -165,7 +166,7 @@ with single quotes in linux command shells."
     ("\\_<\\(\\$\\(?:a\\(?:ction\\|l\\(?:ign\\|low_www\\|ternative\\)\\|nonymous\\|rgument\\|uto\\(?:_complete\\(?:_\\(?:delay\\|initial\\)\\)?\\)?\\)\\|b\\(?:inding\\(?:_list\\|s\\)?\\|rowser_object\\|uffers?\\)\\|c\\(?:harset\\|lass\\|o\\(?:m\\(?:mand\\(?:_list\\)?\\|plet\\(?:er\\|ions\\)\\)\\|nstructor\\)\\|rop\\|wd\\)\\|d\\(?:e\\(?:fault\\(?:_completion\\)?\\|scription\\)\\|isplay_name\\|o\\(?:c\\|mains?\\)\\)\\|f\\(?:allthrough\\|ds\\|lex\\)\\|get_\\(?:description\\|string\\)\\|h\\(?:e\\(?:aders\\|lp\\)\\|i\\(?:nt\\(?:_xpath_expression\\)?\\|story\\)\\)\\|in\\(?:dex_file\\|fo\\|itial_value\\)\\|key\\(?:_sequence\\|map\\)\\|load\\|m\\(?:atch_required\\|od\\(?:ality\\|e\\)\\|ultiple\\)\\|name\\(?:space\\)?\\|o\\(?:bject\\|p\\(?:ener\\|ml_file\\|tions\\)\\|ther_bindings\\|verride_mime_type\\)\\|p\\(?:a\\(?:rent\\|ssword\\|th\\)\\|erms\\|osition\\|r\\(?:e\\(?:fix\\|pare_download\\)\\|ompt\\)\\)\\|re\\(?:gexps\\|peat\\)\\|s\\(?:elect\\|hell_command\\(?:_cwd\\)?\\)\\|t\\(?:e\\(?:mp_file\\|st\\)\\|lds\\)\\|u\\(?:rl\\(?:\\(?:_prefixe\\)?s\\)\\|se\\(?:_\\(?:bookmarks\\|cache\\|history\\|webjumps\\)\\|r\\)\\)\\|va\\(?:lidator\\|riable\\)\\|wrap_column\\)\\)\\_>"
      1 font-lock-constant-face)
     ;; Major functions
-    ("\\_<\\(\\(?:interactiv\\|requir\\)e\\)\\_>\\s-*("
+    ("\\_<\\(\\(?:interactiv\\|provid\\|requir\\)e\\)\\_>"
      1 font-lock-keyword-face)
     ;; common functions
     ("\\(a\\(?:dd_hook\\|lternates\\)\\|build_url_regexp\\|call_on_focused_field\\|define_\\(?:browser_object_class\\|key\\(?:map\\(?:s_page_mode\\)?\\)?\\|webjump\\)\\|exec\\|focus_next\\|mod\\(?:e_line_\\(?:adder\\|mode\\)\\|ify_region\\)\\|p\\(?:age_mode_activate\\|op\\|ush\\)\\|re\\(?:ad_from_clipboard\\|gister_user_stylesheet\\|move_hook\\)\\|s\\(?:e\\(?:ssion_pref\\|t_protocol_handler\\)\\|witch_to_buffer\\)\\|test\\)\\s-*("
@@ -192,17 +193,3 @@ with single quotes in linux command shells."
 
 (provide 'conkeror-minor-mode)
 ;;; conkeror-minor-mode.el ends here.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
