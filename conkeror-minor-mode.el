@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.3.1
+;; Version: 1.4
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -63,13 +63,14 @@
 ;; 
 
 ;;; Change Log:
+;; 1.4 - 20131028 - Shell-quote-argument
 ;; 1.3.1 - 20131026 - Add provide as a keyword
 ;; 1.3 - 20131025 - Font-locking
 ;; 1.0 - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.3.1" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 3 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.4" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 4 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -107,23 +108,9 @@ statement."
                   (concat
                    (conkeror--command)
                    " -q -batch -e "
-                   (conkeror--wrap-in ?' (js--current-statement)))))
+                   (shell-quote-argument (js--current-statement)))))
              (message "Running:\n%s" comm)
              (shell-command-to-string comm))))
-
-(defun conkeror--wrap-in (quote text)
-  "Wrap TEXT in QUOTE and escape instances of QUOTE inside it.
-
-Escapes by wrapping such instances in themselves and adding a
-backslash. This may seems excessive, but it's intended for use
-with single quotes in linux command shells."
-  (let ((st (if (stringp quote) quote (char-to-string quote))))    
-    (concat st
-            (replace-regexp-in-string
-             (regexp-quote st)
-             (concat st "\\\\\\&" st)
-             text t)
-            st)))
 
 (defun conkeror--command ()
   "Generate the string for the conkeror command."
@@ -189,7 +176,6 @@ with single quotes in linux command shells."
       (font-lock-add-keywords
        nil
        conkeror--font-lock-keywords)))
-
 
 (provide 'conkeror-minor-mode)
 ;;; conkeror-minor-mode.el ends here.
