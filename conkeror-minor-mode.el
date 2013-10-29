@@ -63,6 +63,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.4 - 20131029 - Indentation according to http://conkeror.org/DevelopmentGuidelines
 ;; 1.3.1 - 20131026 - Add provide as a keyword
 ;; 1.3 - 20131025 - Font-locking
 ;; 1.0 - 20131025 - Created File.
@@ -182,22 +183,11 @@ with single quotes in linux command shells."
      1 font-lock-variable-name-face)))
 
 (defvar conkeror--original-indent nil)
+(make-variable-buffer-local 'conkeror--original-indent)
 
-;;;###autoload
-(define-minor-mode conkeror-minor-mode nil nil " Conk"
-  '(("" . eval-in-conkeror))
-  :group 'conkeror-minor-mode
-  (if conkeror-minor-mode  ;(regexp-opt '())
-      (font-lock-add-keywords
-       nil
-       conkeror--font-lock-keywords))
-  (message "Indent line function was: %s"
-           (setq conkeror--original-indent indent-line-function))
-  (setq indent-line-function '(conkeror-indent-line)))
-
-(defcustom conkeror-macro-names '("interactive" "define_key")
-  "Names of functions which should be indented as macros."
-  :type '(repeat string)
+(defcustom conkeror-macro-names "\\`\\(interactive\\|define_.*\\)\\'"
+  "A regexp matching functions which should be indented as macros."
+  :type 'regexp
   :group 'conkeror-minor-mode
   :package-version '(conkeror-minor-mode . "1.3.1"))
 
@@ -211,35 +201,35 @@ Relies on `indent-line-function' being defined by the major-mode."
     (widen)
     (let* ((cur (current-indentation))
            (offset (- (current-column) cur))
-           (back-amount
-            (save-excursion
-              (goto-char (cadr (syntax-ppss (point-at-bol))))
-              (forward-char -1)
-              (let ((macro-candidate (thing-at-point 'symbol)))
-                (if (member macro-candidate conkeror-macro-names)
-                    (- (length macro-candidate) 4)
-                  0)))))
-      (indent-line-to (- cur back-amount))
-      (when (> offset 0) (forward-char offset)))))
+           (open (save-excursion (cadr (syntax-ppss (point-at-bol)))))
+           (is-in-macro
+            (when (integer-or-marker-p open)
+              (save-excursion
+                (goto-char open)
+                (forward-char -1)
+                (let ((macro-candidate (thing-at-point 'symbol)))
+                  (and
+                   (stringp macro-candidate)
+                   (string-match conkeror-macro-names
+                                 macro-candidate)))))))
+      (when is-in-macro
+        (indent-line-to 4)
+        (when (> offset 0) (forward-char offset))))))
+
+;;;###autoload
+(define-minor-mode conkeror-minor-mode nil nil " Conk"
+  '(("" . eval-in-conkeror))
+  :group 'conkeror-minor-mode
+  (if conkeror-minor-mode
+      (progn
+        (font-lock-add-keywords nil conkeror--font-lock-keywords)
+        (message "Indent line function was: %s"
+                 (setq conkeror--original-indent indent-line-function))
+        (setq indent-line-function 'conkeror-indent-line))
+    (setq indent-line-function conkeror--original-indent)))
 
 (provide 'conkeror-minor-mode)
 ;;; conkeror-minor-mode.el ends here.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
