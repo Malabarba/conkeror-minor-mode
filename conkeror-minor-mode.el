@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.3.1
+;; Version: 1.4
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -68,8 +68,8 @@
 ;; 1.0 - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.3.1" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 3 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.4" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 4 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -181,6 +181,8 @@ with single quotes in linux command shells."
     ("\\_<\\(a\\(?:ctive_\\(?:\\(?:img_\\)?hint_background_color\\)\\|llow_browser_window_close\\|uto_mode_list\\)\\|b\\(?:lock_content_focus_change_duration\\|rowser_\\(?:automatic_form_focus_window_duration\\|default_open_target\\|form_field_xpath_expression\\|relationship_patterns\\)\\|ury_buffer_position\\)\\|c\\(?:an_kill_last_buffer\\|l\\(?:icks_in_new_buffer_\\(?:button\\|target\\)\\|ock_time_format\\)\\|ontent_handlers\\|wd\\)\\|d\\(?:aemon_quit_exits\\|e\\(?:fault_minibuffer_auto_complete_delay\\|lete_temporary_files_for_command\\)\\|ownload_\\(?:buffer_\\(?:automatic_open_target\\|min_update_interval\\)\\|temporary_file_open_buffer_delay\\)\\)\\|e\\(?:dit\\(?:_field_in_external_editor_extension\\|or_shell_command\\)\\|xternal_\\(?:\\(?:content_handler\\|editor_extension_override\\)s\\)\\|ye_guide_\\(?:context_size\\|highlight_new\\|interval\\)\\)\\|f\\(?:avicon_image_max_size\\|orced_charset_list\\)\\|generate_filename_safely_fn\\|h\\(?:int\\(?:_\\(?:background_color\\|digits\\)\\|s_a\\(?:\\(?:mbiguous_a\\)?uto_exit_delay\\)\\)\\|omepage\\)\\|i\\(?:mg_hint_background_color\\|ndex_\\(?:webjumps_directory\\|xpath_webjump_tidy_command\\)\\|search_keep_selection\\)\\|k\\(?:ey\\(?:_bindings_ignore_capslock\\|board_key_sequence_help_timeout\\)\\|ill_whole_line\\)\\|load_paths\\|m\\(?:edia_scrape\\(?:_default_regexp\\|rs\\)\\|i\\(?:me_type_external_handlers\\|nibuffer_\\(?:auto_complete_\\(?:default\\|preferences\\)\\|completion_rows\\|history_max_items\\|input_mode_show_message_timeout\\|read_url_select_initial\\)\\)\\)\\|new_buffer_\\(?:\\(?:with_opener_\\)?position\\)\\|opensearch_load_paths\\|r\\(?:ead_\\(?:buffer_show_icons\\|url_handler_list\\)\\|un_external_editor_function\\)\\|title_format_fn\\|url_\\(?:completion_\\(?:sort_order\\|use_\\(?:bookmarks\\|history\\|webjumps\\)\\)\\|remoting_fn\\)\\|view_source_\\(?:function\\|use_external_editor\\)\\|w\\(?:ebjump_partial_match\\|indow_extra_argument_max_delay\\)\\|xkcd_add_title\\)\\_>"
      1 font-lock-variable-name-face)))
 
+(defvar conkeror--original-indent nil)
+
 ;;;###autoload
 (define-minor-mode conkeror-minor-mode nil nil " Conk"
   '(("" . eval-in-conkeror))
@@ -188,8 +190,61 @@ with single quotes in linux command shells."
   (if conkeror-minor-mode  ;(regexp-opt '())
       (font-lock-add-keywords
        nil
-       conkeror--font-lock-keywords)))
+       conkeror--font-lock-keywords))
+  (message "Indent line function was: %s"
+           (setq conkeror--original-indent indent-line-function))
+  (setq indent-line-function '(conkeror-indent-line)))
 
+(defcustom conkeror-macro-names '("interactive" "define_key")
+  "Names of functions which should be indented as macros."
+  :type '(repeat string)
+  :group 'conkeror-minor-mode
+  :package-version '(conkeror-minor-mode . "1.3.1"))
+
+(defun conkeror-indent-line ()
+  "Indent current line as a conkeror source file.
+
+Relies on `indent-line-function' being defined by the major-mode."
+  (interactive)
+  (funcall conkeror--original-indent)
+  (save-restriction
+    (widen)
+    (let* ((cur (current-indentation))
+           (offset (- (current-column) cur))
+           (back-amount
+            (save-excursion
+              (goto-char (cadr (syntax-ppss (point-at-bol))))
+              (forward-char -1)
+              (let ((macro-candidate (thing-at-point 'symbol)))
+                (if (member macro-candidate conkeror-macro-names)
+                    (- (length macro-candidate) 4)
+                  0)))))
+      (indent-line-to (- cur back-amount))
+      (when (> offset 0) (forward-char offset)))))
 
 (provide 'conkeror-minor-mode)
 ;;; conkeror-minor-mode.el ends here.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
