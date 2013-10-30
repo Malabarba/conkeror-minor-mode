@@ -3,9 +3,14 @@ conkeror-minor-mode
 
 Mode for editing conkeror javascript files.
 
-Currently, this only defines a function (for sending current
-javascript statement to be evaluated by conkeror) and binds it to a
-key. This function is `eval-in-conkeror` bound to **C-c C-c**.
+Currently, this minor-mode defines:
+
+1. A function for sending current javascript statement to be
+evaluated by conkeror. This function is
+`eval-in-conkeror` bound to **C-c C-c**.
+2. Syntax coloring.
+3. Indentation according to
+[Conkeror Guidelines](http://conkeror.org/DevelopmentGuidelines).
 
 Installation:
 =============
