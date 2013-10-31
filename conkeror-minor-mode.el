@@ -161,6 +161,36 @@ statement."
           (forward-sexp 1)))
       (buffer-substring-no-properties l r))))
 
+(defcustom conkeror-warn-about-guidelines t
+  "If non-nil, apply a warning face on any code that doesn't follow the guidelines.
+
+Indentation will always follow the guidelines. This variable only
+customizes the behavior of font-locking (since it can be slightly
+annoyin at times).
+
+Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
+  :type 'boolean
+  :group 'conkeror-minor-mode
+  :package-version '(conkeror-minor-mode . "1.4"))
+
+(defconst conkeror--font-lock-warnings
+  '( ;; Warnings
+    ("[\t]+" 0 'conkeror-warning-whitespace t)
+    ("\\s-+$" 0 'conkeror-warning-whitespace t)
+    ("\\_<function\\s-+[[:alpha:]]*\\(?:\\(?1:[[:alpha:]](\\|.*\\(?1:){\\)\\s-*$\\)"
+     1 font-lock-warning-face t)
+    ("\\_<function\\s-+[[:alpha:]]*\\(?:[[:alpha:]]\\(?1:\\s-\\s-+\\)(\\|.*)\\(?1:\\s-\\s-+\\){\\s-*$\\)"
+     1 'conkeror-warning-whitespace t)
+    ("\\_<\\(?:typeof\\s-*\\(1:(\\)\\)\\_>"
+     1 font-lock-warning-face t)
+    ("\\_<\\(?:i\\(1:f(\\)\\|whil\\(1:e(\\)\\)\\_>"
+     1 font-lock-warning-face t)
+    ("\\_<\\(if\\|while\\)\\_>\\s-*(\\(?:[^()][^)]*[^)=]=[^)=]\\|[^()]=[^)=]\\)[^)]*\\(?1:)\\)"
+     1 font-lock-warning-face t)
+    ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=]=[^)=]\\|[^()]=[^)=]\\)[^)]*)"
+     1 font-lock-warning-face t))
+  "Font-locks for warning he user of bad formatting.")
+
 (defconst conkeror--font-lock-keywords
   '(;; keywords
     ("\\_<\\(\\$\\(?:a\\(?:ction\\|l\\(?:ign\\|low_www\\|ternative\\)\\|nonymous\\|rgument\\|uto\\(?:_complete\\(?:_\\(?:delay\\|initial\\)\\)?\\)?\\)\\|b\\(?:inding\\(?:_list\\|s\\)?\\|rowser_object\\|uffers?\\)\\|c\\(?:harset\\|lass\\|o\\(?:m\\(?:mand\\(?:_list\\)?\\|plet\\(?:er\\|ions\\)\\)\\|nstructor\\)\\|rop\\|wd\\)\\|d\\(?:e\\(?:fault\\(?:_completion\\)?\\|scription\\)\\|isplay_name\\|o\\(?:c\\|mains?\\)\\)\\|f\\(?:allthrough\\|ds\\|lex\\)\\|get_\\(?:description\\|string\\)\\|h\\(?:e\\(?:aders\\|lp\\)\\|i\\(?:nt\\(?:_xpath_expression\\)?\\|story\\)\\)\\|in\\(?:dex_file\\|fo\\|itial_value\\)\\|key\\(?:_sequence\\|map\\)\\|load\\|m\\(?:atch_required\\|od\\(?:ality\\|e\\)\\|ultiple\\)\\|name\\(?:space\\)?\\|o\\(?:bject\\|p\\(?:ener\\|ml_file\\|tions\\)\\|ther_bindings\\|verride_mime_type\\)\\|p\\(?:a\\(?:rent\\|ssword\\|th\\)\\|erms\\|osition\\|r\\(?:e\\(?:fix\\|pare_download\\)\\|ompt\\)\\)\\|re\\(?:gexps\\|peat\\)\\|s\\(?:elect\\|hell_command\\(?:_cwd\\)?\\)\\|t\\(?:e\\(?:mp_file\\|st\\)\\|lds\\)\\|u\\(?:rl\\(?:\\(?:_prefixe\\)?s\\)\\|se\\(?:_\\(?:bookmarks\\|cache\\|history\\|webjumps\\)\\|r\\)\\)\\|va\\(?:lidator\\|riable\\)\\|wrap_column\\)\\)\\_>"
@@ -179,22 +209,8 @@ statement."
      1 font-lock-variable-name-face)
     ;; user variables
     ("\\_<\\(a\\(?:ctive_\\(?:\\(?:img_\\)?hint_background_color\\)\\|llow_browser_window_close\\|uto_mode_list\\)\\|b\\(?:lock_content_focus_change_duration\\|rowser_\\(?:automatic_form_focus_window_duration\\|default_open_target\\|form_field_xpath_expression\\|relationship_patterns\\)\\|ury_buffer_position\\)\\|c\\(?:an_kill_last_buffer\\|l\\(?:icks_in_new_buffer_\\(?:button\\|target\\)\\|ock_time_format\\)\\|ontent_handlers\\|wd\\)\\|d\\(?:aemon_quit_exits\\|e\\(?:fault_minibuffer_auto_complete_delay\\|lete_temporary_files_for_command\\)\\|ownload_\\(?:buffer_\\(?:automatic_open_target\\|min_update_interval\\)\\|temporary_file_open_buffer_delay\\)\\)\\|e\\(?:dit\\(?:_field_in_external_editor_extension\\|or_shell_command\\)\\|xternal_\\(?:\\(?:content_handler\\|editor_extension_override\\)s\\)\\|ye_guide_\\(?:context_size\\|highlight_new\\|interval\\)\\)\\|f\\(?:avicon_image_max_size\\|orced_charset_list\\)\\|generate_filename_safely_fn\\|h\\(?:int\\(?:_\\(?:background_color\\|digits\\)\\|s_a\\(?:\\(?:mbiguous_a\\)?uto_exit_delay\\)\\)\\|omepage\\)\\|i\\(?:mg_hint_background_color\\|ndex_\\(?:webjumps_directory\\|xpath_webjump_tidy_command\\)\\|search_keep_selection\\)\\|k\\(?:ey\\(?:_bindings_ignore_capslock\\|board_key_sequence_help_timeout\\)\\|ill_whole_line\\)\\|load_paths\\|m\\(?:edia_scrape\\(?:_default_regexp\\|rs\\)\\|i\\(?:me_type_external_handlers\\|nibuffer_\\(?:auto_complete_\\(?:default\\|preferences\\)\\|completion_rows\\|history_max_items\\|input_mode_show_message_timeout\\|read_url_select_initial\\)\\)\\)\\|new_buffer_\\(?:\\(?:with_opener_\\)?position\\)\\|opensearch_load_paths\\|r\\(?:ead_\\(?:buffer_show_icons\\|url_handler_list\\)\\|un_external_editor_function\\)\\|title_format_fn\\|url_\\(?:completion_\\(?:sort_order\\|use_\\(?:bookmarks\\|history\\|webjumps\\)\\)\\|remoting_fn\\)\\|view_source_\\(?:function\\|use_external_editor\\)\\|w\\(?:ebjump_partial_match\\|indow_extra_argument_max_delay\\)\\|xkcd_add_title\\)\\_>"
-     1 font-lock-variable-name-face)
-    ;; Warnings
-    ("[\t]+" 0 'conkeror-warning-whitespace t)
-    ("\\s-+$" 0 'conkeror-warning-whitespace t)
-    ("\\_<function\\s-+[[:alpha:]]*\\(?:\\(?1:[[:alpha:]](\\|.*\\(?1:){\\)\\s-*$\\)"
-     1 font-lock-warning-face t)
-    ("\\_<function\\s-+[[:alpha:]]*\\(?:[[:alpha:]]\\(?1:\\s-\\s-+\\)(\\|.*)\\(?1:\\s-\\s-+\\){\\s-*$\\)"
-     1 'conkeror-warning-whitespace t)
-    ("\\_<\\(?:typeof\\s-*\\(1:(\\)\\)\\_>"
-     1 font-lock-warning-face t)
-    ("\\_<\\(?:i\\(1:f(\\)\\|whil\\(1:e(\\)\\)\\_>"
-     1 font-lock-warning-face t)
-    ("\\_<\\(if\\|while\\)\\_>\\s-*(\\(?:[^()][^)]*[^)=]=[^)=]\\|[^()]=[^)=]\\)[^)]*\\(?1:)\\)"
-     1 font-lock-warning-face t)
-    ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=]=[^)=]\\|[^()]=[^)=]\\)[^)]*)"
-     1 font-lock-warning-face t)))
+     1 font-lock-variable-name-face))
+  "General font-locking.")
 
 (defvar conkeror--original-indent nil)
 (make-variable-buffer-local 'conkeror--original-indent)
@@ -237,6 +253,8 @@ Relies on `indent-line-function' being defined by the major-mode."
   (if conkeror-minor-mode
       (progn
         (font-lock-add-keywords nil conkeror--font-lock-keywords)
+        (when conkeror-warn-about-guidelines
+          (font-lock-add-keywords nil conkeror--font-lock-warnings :append))
         (setq conkeror--original-indent indent-line-function)
         (setq indent-line-function 'conkeror-indent-line))
     (setq indent-line-function conkeror--original-indent)))
