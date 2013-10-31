@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.5
+;; Version: 1.5.1
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -76,17 +76,18 @@
 ;; 
 
 ;;; Change Log:
-;; 1.5 - 20131031 - next-to-full compliance with Whitespace & Style Guidelines
+;; 1.5.1 - 20131031 - A few more warnings
+;; 1.5   - 20131031 - next-to-full compliance with Whitespace & Style Guidelines
 ;; 1.4.1 - 20131030 - Fix bug-report
 ;; 1.4.1 - 20131030 - Shell-quote-argument
-;; 1.4 - 20131029 - Indentation according to http://conkeror.org/DevelopmentGuidelines
+;; 1.4   - 20131029 - Indentation according to http://conkeror.org/DevelopmentGuidelines
 ;; 1.3.1 - 20131026 - Add provide as a keyword
-;; 1.3 - 20131025 - Font-locking
-;; 1.0 - 20131025 - Created File.
+;; 1.3   - 20131025 - Font-locking
+;; 1.0   - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.5" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 6 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.5.1" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 7 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -193,6 +194,9 @@ Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
     ;; more than one space between function name and parenthesis
     ("\\_<function\\(?:\\s-+[[:alnum:]_]+\\|\\)\\(?:\\(?1:\\s-\\s-+\\)(\\|.*)\\(?1:\\s-\\s-+\\){\\s-*$\\)"
      1 'conkeror-warning-whitespace t)
+    ;; More than one space between "function" and function name (or parentheses)
+    ("\\_<function\\(?1:\\s-\\s-+\\)[[:alnum:]_(]+"
+     1 'conkeror-warning-whitespace t)
     ;; no space between function name and parentheses
     ("\\_<function\\(?:\\s-+[[:alnum:]_]+\\|\\)\\(?1:(\\)"
      1 font-lock-warning-face t)
@@ -206,6 +210,8 @@ Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
      1 font-lock-warning-face t)
     ;; more than one space between for/if/while and parentheses
     ("\\_<\\(?:for\\|if\\|while\\)\\(?1:\\s-\\s-+\\)("
+     1 'conkeror-warning-whitespace t)
+    ("\\_<\\(?:for\\|if\\|while\\)\\s-*(.*)\\(?1:\\s-\\s-+\\){"
      1 'conkeror-warning-whitespace t)
     ;; Assignment inside if/while without double parentheses 
     ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=><!]\\(?3:=\\)[^)=]\\|[^()]\\(?3:=\\)[^)=]\\)[^)]*\\(?2:)\\)"
