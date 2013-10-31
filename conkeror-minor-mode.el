@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.4.1
+;; Version: 1.5
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -67,6 +67,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.5 - 20131031 - next-to-full compliance with Whitespace & Style Guidelines
 ;; 1.4.1 - 20131030 - Fix bug-report
 ;; 1.4.1 - 20131030 - Shell-quote-argument
 ;; 1.4 - 20131029 - Indentation according to http://conkeror.org/DevelopmentGuidelines
@@ -75,8 +76,8 @@
 ;; 1.0 - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.4.1" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 5 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.5" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 6 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -92,9 +93,9 @@ Please include this in your report!"
 (defface conkeror-warning-whitespace
   '((t
      :background "Red"
-     :inherit font-lock-warning-face
+     :inherit default
      ))
-  "Face to warn the user he's using a tab (which is a no-no)."
+  "Face to warn the user he's using a tab (which is a no-no) or other inappropriate whitespace."
   :group 'conkeror-minor-mode-faces)
 
 (defcustom conkeror-file-path nil
@@ -172,24 +173,37 @@ annoyin at times).
 Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
   :type 'boolean
   :group 'conkeror-minor-mode
-  :package-version '(conkeror-minor-mode . "1.4"))
+  :package-version '(conkeror-minor-mode . "1.5"))
 
 (defconst conkeror--font-lock-warnings
-  '( ;; Warnings
+  '(;; Warnings
+    ;; tabs
     ("[\t]+" 0 'conkeror-warning-whitespace t)
-    ("\\s-+$" 0 'conkeror-warning-whitespace t)
-    ("\\_<function\\s-+[[:alpha:]]*\\(?:\\(?1:[[:alpha:]](\\|.*\\(?1:){\\)\\s-*$\\)"
-     1 font-lock-warning-face t)
-    ("\\_<function\\s-+[[:alpha:]]*\\(?:[[:alpha:]]\\(?1:\\s-\\s-+\\)(\\|.*)\\(?1:\\s-\\s-+\\){\\s-*$\\)"
+    ;; space at end of line
+    ("[^\n ]\\(\\s-+\\)$" 1 'conkeror-warning-whitespace t)
+    ;; more than one space between function name and parenthesis
+    ("\\_<function\\(?:\\s-+[[:alnum:]_]+\\|\\)\\(?:\\(?1:\\s-\\s-+\\)(\\|.*)\\(?1:\\s-\\s-+\\){\\s-*$\\)"
      1 'conkeror-warning-whitespace t)
-    ("\\_<\\(?:typeof\\s-*\\(1:(\\)\\)\\_>"
+    ;; no space between function name and parentheses
+    ("\\_<function\\(?:\\s-+[[:alnum:]_]+\\|\\)\\(?1:(\\)"
      1 font-lock-warning-face t)
-    ("\\_<\\(?:i\\(1:f(\\)\\|whil\\(1:e(\\)\\)\\_>"
+    ("\\_<function\\_>.*\\(?1:){\\)\\s-*$"
      1 font-lock-warning-face t)
-    ("\\_<\\(if\\|while\\)\\_>\\s-*(\\(?:[^()][^)]*[^)=]=[^)=]\\|[^()]=[^)=]\\)[^)]*\\(?1:)\\)"
+    ;; typeOf with parenthesis
+    ("\\_<\\(?:typeof\\s-*\\(?1:(\\)\\)\\_>"
      1 font-lock-warning-face t)
-    ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=]=[^)=]\\|[^()]=[^)=]\\)[^)]*)"
-     1 font-lock-warning-face t))
+    ;; no space between for/if/while and parentheses
+    ("\\_<\\(?:fo\\(?1:r(\\)\\|i\\(?1:f(\\)\\|whil\\(?1:e(\\)\\)"
+     1 font-lock-warning-face t)
+    ;; more than one space between for/if/while and parentheses
+    ("\\_<\\(?:for\\|if\\|while\\)\\(?1:\\s-\\s-+\\)("
+     1 'conkeror-warning-whitespace t)
+    ;; Assignment inside if/while without double parentheses 
+    ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=><!]\\(?3:=\\)[^)=]\\|[^()]\\(?3:=\\)[^)=]\\)[^)]*\\(?2:)\\)"
+     (1 font-lock-warning-face t) (2 font-lock-warning-face t) (3 'conkeror-warning-whitespace t))
+    ;; space between key and colon
+    ("^[^\\?]*[^ ]\\(?1:\\s-+\\):"
+     1 'conkeror-warning-whitespace t))
   "Font-locks for warning he user of bad formatting.")
 
 (defconst conkeror--font-lock-keywords
@@ -253,9 +267,9 @@ Relies on `indent-line-function' being defined by the major-mode."
   :group 'conkeror-minor-mode
   (if conkeror-minor-mode
       (progn
-        (font-lock-add-keywords nil conkeror--font-lock-keywords)
         (when conkeror-warn-about-guidelines
-          (font-lock-add-keywords nil conkeror--font-lock-warnings :append))
+          (font-lock-add-keywords nil conkeror--font-lock-warnings))
+        (font-lock-add-keywords nil conkeror--font-lock-keywords)
         (setq conkeror--original-indent indent-line-function)
         (setq indent-line-function 'conkeror-indent-line))
     (setq indent-line-function conkeror--original-indent)))
