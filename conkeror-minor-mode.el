@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.5.1
+;; Version: 1.5.2
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -76,6 +76,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.5.2 - 20131031 - Closing } on column 0 counts as a statement ending.
 ;; 1.5.1 - 20131031 - A few more warnings
 ;; 1.5   - 20131031 - next-to-full compliance with Whitespace & Style Guidelines
 ;; 1.4.1 - 20131030 - Fix bug-report
@@ -86,8 +87,8 @@
 ;; 1.0   - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.5.1" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 7 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.5.2" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 8 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -160,11 +161,13 @@ statement."
         (skip-chars-backward "[:blank:]\n")
         (setq initial-point (point))
         (goto-char (point-min))
-        (while (and (skip-chars-forward "[:blank:]\n")
-                    (null r)
-                    (null (eobp)))
-          (when (looking-at ";")
-            (forward-char 1)
+        (forward-sexp 1) ;(Skip over comments and whitespace)
+        (forward-sexp -1)
+        (while (null (or r (eobp)))
+          (when (or (looking-back "^}\\s-*")
+                    (and (skip-chars-forward "[:blank:]\n")
+                         (looking-at ";")))
+            (when (looking-at ";") (forward-char 1))
             (if (>= (point) initial-point)
                 (setq r (point))
               (forward-sexp 1) ;(Skip over comments and whitespace)
