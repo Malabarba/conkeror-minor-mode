@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.4
+;; Version: 1.4.1
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -67,6 +67,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.4.1 - 20131030 - Fix bug-report
 ;; 1.4.1 - 20131030 - Shell-quote-argument
 ;; 1.4 - 20131029 - Indentation according to http://conkeror.org/DevelopmentGuidelines
 ;; 1.3.1 - 20131026 - Add provide as a keyword
@@ -74,15 +75,15 @@
 ;; 1.0 - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.4" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 4 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.4.1" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 5 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
   (message "Your conkeror-version is: %s, and your emacs version is: %s.
 Please include this in your report!"
-           conkeror-version emacs-version)
-  (browse-url "https://github.com/BruceConnor/conkeror-minor-mode/issues/new"))
+           conkeror-minor-mode-version emacs-version)
+  (browse-url "https://github.com/Bruce-Connor/conkeror-minor-mode/issues/new"))
 (defun conkeror-customize ()
   "Open the customization menu in the `conkeror-minor-mode' group."
   (interactive)
@@ -267,4 +268,3 @@ Relies on `indent-line-function' being defined by the major-mode."
 ;; coding: utf-8
 ;; truncate-lines: t
 ;; End:
-
