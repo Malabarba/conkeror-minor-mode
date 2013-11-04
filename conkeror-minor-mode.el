@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.5.2
+;; Version: 1.5.3
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -76,6 +76,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.5.3 - 20131104 - Use built-in show-trailing-whitespace
 ;; 1.5.2 - 20131031 - Closing } on column 0 counts as a statement ending.
 ;; 1.5.1 - 20131031 - A few more warnings
 ;; 1.5   - 20131031 - next-to-full compliance with Whitespace & Style Guidelines
@@ -87,8 +88,8 @@
 ;; 1.0   - 20131025 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.5.2" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 8 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.5.3" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 9 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -192,8 +193,8 @@ Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
   '(;; Warnings
     ;; tabs
     ("[\t]+" 0 'conkeror-warning-whitespace t)
-    ;; space at end of line
-    ("[^\n ]\\(\\s-+\\)$" 1 'conkeror-warning-whitespace t)
+    ;; space at end of line is now handled by show-trailing-whitespace
+    ;; ("[^\n ]\\(\\s-+\\)$" 1 'conkeror-warning-whitespace t)
     ;; more than one space between function name and parenthesis
     ("\\_<function\\(?:\\s-+[[:alnum:]_]+\\|\\)\\(?:\\(?1:\\s-\\s-+\\)(\\|.*)\\(?1:\\s-\\s-+\\){\\s-*$\\)"
      1 'conkeror-warning-whitespace t)
@@ -279,6 +280,8 @@ Relies on `indent-line-function' being defined by the major-mode."
         (indent-line-to 4)
         (when (> offset 0) (forward-char offset))))))
 
+(defvar conkeror--backup-show-trailing-whitespace nil "")
+(make-variable-buffer-local 'conkeror--backup-show-trailing-whitespace)
 ;;;###autoload
 (define-minor-mode conkeror-minor-mode nil nil " Conk"
   '(("" . eval-in-conkeror))
@@ -289,7 +292,9 @@ Relies on `indent-line-function' being defined by the major-mode."
           (font-lock-add-keywords nil conkeror--font-lock-warnings))
         (font-lock-add-keywords nil conkeror--font-lock-keywords)
         (setq conkeror--original-indent indent-line-function)
-        (setq indent-line-function 'conkeror-indent-line))
+        (setq indent-line-function 'conkeror-indent-line)
+        (setq conkeror-backup-show-trailing-whitespace show-trailing-whitespace)
+        (setq show-trailing-whitespace t))
     (setq indent-line-function conkeror--original-indent)))
 
 
