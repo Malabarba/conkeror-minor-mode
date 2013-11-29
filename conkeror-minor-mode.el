@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.5.3
+;; Version: 1.5.4
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -76,6 +76,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.5.4 - 2013/11/29 - Fix issue #2.
 ;; 1.5.3 - 2013/11/04 - Use built-in show-trailing-whitespace
 ;; 1.5.2 - 2013/10/31 - Closing } on column 0 counts as a statement ending.
 ;; 1.5.1 - 2013/10/31 - A few more warnings
@@ -282,6 +283,7 @@ Relies on `indent-line-function' being defined by the major-mode."
 
 (defvar conkeror--backup-show-trailing-whitespace nil "")
 (make-variable-buffer-local 'conkeror--backup-show-trailing-whitespace)
+
 ;;;###autoload
 (define-minor-mode conkeror-minor-mode nil nil " Conk"
   '(("" . eval-in-conkeror))
@@ -293,7 +295,7 @@ Relies on `indent-line-function' being defined by the major-mode."
         (font-lock-add-keywords nil conkeror--font-lock-keywords)
         (setq conkeror--original-indent indent-line-function)
         (setq indent-line-function 'conkeror-indent-line)
-        (setq conkeror-backup-show-trailing-whitespace show-trailing-whitespace)
+        (setq conkeror--backup-show-trailing-whitespace show-trailing-whitespace)
         (setq show-trailing-whitespace t))
     (setq indent-line-function conkeror--original-indent)))
 
