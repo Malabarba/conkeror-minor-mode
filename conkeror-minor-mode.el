@@ -76,20 +76,20 @@
 ;; 
 
 ;;; Change Log:
-;; 1.5.3 - 20131104 - Use built-in show-trailing-whitespace
-;; 1.5.2 - 20131031 - Closing } on column 0 counts as a statement ending.
-;; 1.5.1 - 20131031 - A few more warnings
-;; 1.5   - 20131031 - next-to-full compliance with Whitespace & Style Guidelines
-;; 1.4.1 - 20131030 - Fix bug-report
-;; 1.4.1 - 20131030 - Shell-quote-argument
-;; 1.4   - 20131029 - Indentation according to http://conkeror.org/DevelopmentGuidelines
-;; 1.3.1 - 20131026 - Add provide as a keyword
-;; 1.3   - 20131025 - Font-locking
-;; 1.0   - 20131025 - Created File.
+;; 1.5.3 - 2013/11/04 - Use built-in show-trailing-whitespace
+;; 1.5.2 - 2013/10/31 - Closing } on column 0 counts as a statement ending.
+;; 1.5.1 - 2013/10/31 - A few more warnings
+;; 1.5   - 2013/10/31 - next-to-full compliance with Whitespace & Style Guidelines
+;; 1.4.1 - 2013/10/30 - Fix bug-report
+;; 1.4.1 - 2013/10/30 - Shell-quote-argument
+;; 1.4   - 2013/10/29 - Indentation according to http://conkeror.org/DevelopmentGuidelines
+;; 1.3.1 - 2013/10/26 - Add provide as a keyword
+;; 1.3   - 2013/10/25 - Font-locking
+;; 1.0   - 2013/10/25 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.5.3" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 9 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.5.4" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 10 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
