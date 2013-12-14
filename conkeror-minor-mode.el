@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.5.4
+;; Version: 1.5.5
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -76,6 +76,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.5.5 - 2013/12/14 - False with conkeror--font-lock-warnings on ternary operator.
 ;; 1.5.4 - 2013/11/29 - Fix issue #2.
 ;; 1.5.3 - 2013/11/04 - Use built-in show-trailing-whitespace
 ;; 1.5.2 - 2013/10/31 - Closing } on column 0 counts as a statement ending.
@@ -89,8 +90,8 @@
 ;; 1.0   - 2013/10/25 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.5.4" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 10 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.5.5" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 11 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -222,8 +223,9 @@ Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
     ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=><!]\\(?3:=\\)[^)=]\\|[^()]\\(?3:=\\)[^)=]\\)[^)]*\\(?2:)\\)"
      (1 font-lock-warning-face t) (2 font-lock-warning-face t) (3 'conkeror-warning-whitespace t))
     ;; space between key and colon
-    ("^[^\\?]*[^ ]\\(?1:\\s-+\\):"
-     1 'conkeror-warning-whitespace t))
+    ;; Had to remove this because it gives false positives against the ternary operator.
+    ;; ("^[^\\?]*[^ ]\\(?1:\\s-+\\):" 1 'conkeror-warning-whitespace t)
+    )
   "Font-locks for warning he user of bad formatting.")
 
 (defconst conkeror--font-lock-keywords
