@@ -227,7 +227,7 @@ Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
     ;; Had to remove this because it gives false positives against the ternary operator.
     ;; ("^[^\\?]*[^ ]\\(?1:\\s-+\\):" 1 'conkeror-warning-whitespace t)
     )
-  "Font-locks for warning he user of bad formatting.")
+  "Font-locks for warning the user of bad formatting.")
 
 (defconst conkeror--font-lock-keywords
   '(;; keywords
