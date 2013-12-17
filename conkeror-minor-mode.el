@@ -219,10 +219,11 @@ Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
      1 'conkeror-warning-whitespace t)
     ("\\_<\\(?:for\\|if\\|while\\)\\s-*(.*)\\(?1:\\s-\\s-+\\){"
      1 'conkeror-warning-whitespace t)
-    ;; Assignment inside if/while without double parentheses 
-    ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=><!]\\(?3:=\\)[^)=]\\|[^()]\\(?3:=\\)[^)=]\\)[^)]*\\(?2:)\\)"
-     (1 font-lock-warning-face t) (2 font-lock-warning-face t) (3 'conkeror-warning-whitespace t))
-    ;; space between key and colon
+    ;; ;; Assignment inside if/while without double parentheses 
+    ;; Had to remove this because it gives false positives when the assignment is preceded by a && or ||.
+    ;; ("\\_<\\(if\\|while\\)\\_>\\s-*\\(?1:(\\)\\(?:[^()][^)]*[^)=><!]\\(?3:=\\)[^)=]\\|[^()]\\(?3:=\\)[^)=]\\)[^)]*\\(?2:)\\)"
+    ;;  (1 font-lock-warning-face t) (2 font-lock-warning-face t) (3 'conkeror-warning-whitespace t))
+    ;; ;; space between key and colon
     ;; Had to remove this because it gives false positives against the ternary operator.
     ;; ("^[^\\?]*[^ ]\\(?1:\\s-+\\):" 1 'conkeror-warning-whitespace t)
     )
