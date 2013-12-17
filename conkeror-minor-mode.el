@@ -150,10 +150,12 @@ statement."
                       " " (expand-file-name conkeror-file-path))
             (expand-file-name conkeror-file-path))
         (error "%S must be absolute." 'conkeror-file-path))
-    (or
-     (executable-find "conkeror")
-     (executable-find "conkeror.sh")
-     (error "Couldn't find a conkeror executable! Please set %S." 'conkeror-file-path))))
+    (shell-quote-argument
+     (or
+      (executable-find "conkeror")
+      (executable-find "conkeror.sh")
+      (executable-find "conkeror.exe")
+      (error "Couldn't find a conkeror executable! Please set %S." 'conkeror-file-path)))))
 
 (defun js--current-statement ()
   (if (region-active-p)
