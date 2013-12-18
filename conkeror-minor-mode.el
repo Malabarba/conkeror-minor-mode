@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.5.5
+;; Version: 1.6
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -76,6 +76,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.6   - 2013/12/18 - eval-in-conkeror better windows support.
 ;; 1.5.5 - 2013/12/14 - False with conkeror--font-lock-warnings on ternary operator.
 ;; 1.5.4 - 2013/11/29 - Fix issue #2.
 ;; 1.5.3 - 2013/11/04 - Use built-in show-trailing-whitespace
@@ -90,8 +91,8 @@
 ;; 1.0   - 2013/10/25 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.5.5" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 11 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.6" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 12 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -135,7 +136,7 @@ statement."
   (message "Result was:\n%s"
            (let ((comm 
                   (concat
-                   (conkeror--command)
+                   (shell-quote-argument (conkeror--command))
                    " -q -batch -e "
                    (shell-quote-argument (js--current-statement)))))
              (message "Running:\n%s" comm)
@@ -150,12 +151,11 @@ statement."
                       " " (expand-file-name conkeror-file-path))
             (expand-file-name conkeror-file-path))
         (error "%S must be absolute." 'conkeror-file-path))
-    (shell-quote-argument
-     (or
-      (executable-find "conkeror")
-      (executable-find "conkeror.sh")
-      (executable-find "conkeror.exe")
-      (error "Couldn't find a conkeror executable! Please set %S." 'conkeror-file-path)))))
+    (or
+     (executable-find "conkeror")
+     (executable-find "conkeror.sh")
+     (executable-find "conkeror.exe")
+     (error "Couldn't find a conkeror executable! Please set %S." 'conkeror-file-path))))
 
 (defun js--current-statement ()
   (if (region-active-p)
