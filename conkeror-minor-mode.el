@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
 ;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.6
+;; Version: 1.6.1
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -76,6 +76,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.6.1 - 2014/07/05 - Include require_match in font-locking.
 ;; 1.6   - 2013/12/18 - eval-in-conkeror better windows support.
 ;; 1.5.5 - 2013/12/14 - False with conkeror--font-lock-warnings on ternary operator.
 ;; 1.5.4 - 2013/11/29 - Fix issue #2.
@@ -91,8 +92,8 @@
 ;; 1.0   - 2013/10/25 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.6" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 12 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.6.1" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 13 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
@@ -233,7 +234,7 @@ Guidelines can be found at http://conkeror.org/DevelopmentGuidelines ."
 
 (defconst conkeror--font-lock-keywords
   '(;; keywords
-    ("\\_<\\(\\$\\(?:a\\(?:ction\\|l\\(?:ign\\|low_www\\|ternative\\)\\|nonymous\\|rgument\\|uto\\(?:_complete\\(?:_\\(?:delay\\|initial\\)\\)?\\)?\\)\\|b\\(?:inding\\(?:_list\\|s\\)?\\|rowser_object\\|uffers?\\)\\|c\\(?:harset\\|lass\\|o\\(?:m\\(?:mand\\(?:_list\\)?\\|plet\\(?:er\\|ions\\)\\)\\|nstructor\\)\\|rop\\|wd\\)\\|d\\(?:e\\(?:fault\\(?:_completion\\)?\\|scription\\)\\|isplay_name\\|o\\(?:c\\|mains?\\)\\)\\|f\\(?:allthrough\\|ds\\|lex\\)\\|get_\\(?:description\\|string\\)\\|h\\(?:e\\(?:aders\\|lp\\)\\|i\\(?:nt\\(?:_xpath_expression\\)?\\|story\\)\\)\\|in\\(?:dex_file\\|fo\\|itial_value\\)\\|key\\(?:_sequence\\|map\\)\\|load\\|m\\(?:atch_required\\|od\\(?:ality\\|e\\)\\|ultiple\\)\\|name\\(?:space\\)?\\|o\\(?:bject\\|p\\(?:ener\\|ml_file\\|tions\\)\\|ther_bindings\\|verride_mime_type\\)\\|p\\(?:a\\(?:rent\\|ssword\\|th\\)\\|erms\\|osition\\|r\\(?:e\\(?:fix\\|pare_download\\)\\|ompt\\)\\)\\|re\\(?:gexps\\|peat\\)\\|s\\(?:elect\\|hell_command\\(?:_cwd\\)?\\)\\|t\\(?:e\\(?:mp_file\\|st\\)\\|lds\\)\\|u\\(?:rl\\(?:\\(?:_prefixe\\)?s\\)\\|se\\(?:_\\(?:bookmarks\\|cache\\|history\\|webjumps\\)\\|r\\)\\)\\|va\\(?:lidator\\|riable\\)\\|wrap_column\\)\\)\\_>"
+    ("\\_<\\(\\$\\(?:a\\(?:ction\\|l\\(?:ign\\|low_www\\|ternative\\)\\|nonymous\\|rgument\\|uto\\(?:_complete\\(?:_\\(?:delay\\|initial\\)\\)?\\)?\\)\\|b\\(?:inding\\(?:_list\\|s\\)?\\|rowser_object\\|uffers?\\)\\|c\\(?:harset\\|lass\\|o\\(?:m\\(?:mand\\(?:_list\\)?\\|plet\\(?:er\\|ions\\)\\)\\|nstructor\\)\\|rop\\|wd\\)\\|d\\(?:e\\(?:fault\\(?:_completion\\)?\\|scription\\)\\|isplay_name\\|o\\(?:c\\|mains?\\)\\)\\|f\\(?:allthrough\\|ds\\|lex\\)\\|get_\\(?:description\\|string\\)\\|h\\(?:e\\(?:aders\\|lp\\)\\|i\\(?:nt\\(?:_xpath_expression\\)?\\|story\\)\\)\\|in\\(?:dex_file\\|fo\\|itial_value\\)\\|key\\(?:_sequence\\|map\\)\\|load\\|m\\(?:od\\(?:ality\\|e\\)\\|ultiple\\)\\|name\\(?:space\\)?\\|o\\(?:bject\\|p\\(?:ener\\|ml_file\\|tions\\)\\|ther_bindings\\|verride_mime_type\\)\\|p\\(?:a\\(?:rent\\|ssword\\|th\\)\\|erms\\|osition\\|r\\(?:e\\(?:fix\\|pare_download\\)\\|ompt\\)\\)\\|re\\(?:gexps\\|peat\\|quire_match\\)\\|s\\(?:elect\\|hell_command\\(?:_cwd\\)?\\)\\|t\\(?:e\\(?:mp_file\\|st\\)\\|lds\\)\\|u\\(?:rl\\(?:\\(?:_prefixe\\)?s\\)\\|se\\(?:_\\(?:bookmarks\\|cache\\|history\\|webjumps\\)\\|r\\)\\)\\|va\\(?:lidator\\|riable\\)\\|wrap_column\\)\\)\\_>"
      1 font-lock-constant-face)
     ;; "Macros" (and a couple big functions)
     ("\\_<\\(define_\\(?:browser_object_class\\|key\\(?:map\\(?:s_page_mode\\)?\\)?\\|webjump\\)\\|\\(?:interactiv\\|provid\\|requir\\)e\\)\\_>"
