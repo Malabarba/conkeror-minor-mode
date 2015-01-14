@@ -3,8 +3,8 @@
 ;; Copyright (C) 2013 Artur Malabarba <bruce.connor.am@gmail.com>
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>>
-;; URL: http://github.com/BruceConnor/conkeror-minor-mode
-;; Version: 1.6.1
+;; URL: http://github.com/Bruce-Connor/conkeror-minor-mode
+;; Version: 1.6.2
 ;; Keywords: programming tools
 ;; Prefix: conkeror
 ;; Separator: -
@@ -92,8 +92,8 @@
 ;; 1.0   - 2013/10/25 - Created File.
 ;;; Code:
 
-(defconst conkeror-minor-mode-version "1.6.1" "Version of the conkeror-minor-mode.el package.")
-(defconst conkeror-minor-mode-version-int 13 "Version of the conkeror-minor-mode.el package, as an integer.")
+(defconst conkeror-minor-mode-version "1.6.2" "Version of the conkeror-minor-mode.el package.")
+(defconst conkeror-minor-mode-version-int 14 "Version of the conkeror-minor-mode.el package, as an integer.")
 (defun conkeror-bug-report ()
   "Opens github issues page in a web browser. Please send me any bugs you find, and please inclue your emacs and conkeror versions."
   (interactive)
